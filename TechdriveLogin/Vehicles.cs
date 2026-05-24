@@ -22,98 +22,146 @@ namespace TechdriveLogin
         {
             try
             {
-                _loadedVehicles = DatabaseHelper.GetVehicles(7);
-                
-                // Map of UI controls from designer
-                Label[] vmLabels = { lblVm1, lblVm2, lblVm3, lblVm4, lblVm5, lblVm6, lblVm7 };
-                Label[] pnLabels = { lblPn1, lblPn2, lblPn3, lblPn4, lblPn5, lblPn6, lblPn7 };
-                Label[] remarksLabels = { lblRemarks1, lblRemarks2, lblRemarks3, lblRemarks4, lblRemarks5, lblRemarks6, lblRemarks7 };
-                Label[] statusLabels = { lblStatus1, lblStatus2, lblStatus3, lblStatus4, lblStatus5, lblStatus6, lblStatus7 };
-                Button[] statusButtons = { btnStm1, btnStm2, btnStm3, btnStm4, btnStm5, btnStm6, btnStm7 };
-
-                for (int i = 0; i < 7; i++)
+                Panel scrollPanel = panel7.Controls["dynamicScrollPanel"] as Panel;
+                if (scrollPanel == null)
                 {
-                    if (i < _loadedVehicles.Count)
+                    scrollPanel = new Panel
                     {
-                        var vehicle = _loadedVehicles[i];
-                        if (vmLabels[i] != null)
-                        {
-                            vmLabels[i].Text = $"{vehicle.Make} {vehicle.Model}";
-                            vmLabels[i].Font = new Font("Century Gothic", 12F, FontStyle.Bold); // Reduce size so names fit
-                        }
-                        if (pnLabels[i] != null)
-                        {
-                            pnLabels[i].Text = vehicle.PlateNumber;
-                        }
-                        if (remarksLabels[i] != null)
-                        {
-                            remarksLabels[i].Text = vehicle.Remarks;
-                        }
-                        if (statusLabels[i] != null)
-                        {
-                            statusLabels[i].Text = vehicle.Status;
-                            // Align all status labels horizontally at X = 805 (fixing row 3 alignment)
-                            statusLabels[i].Location = new Point(805, statusLabels[i].Location.Y);
-                        }
-                        
-                        // Status color formatting and button text/font adjustments
-                        if (statusLabels[i] != null)
-                        {
-                            if (vehicle.Status == "Available")
-                            {
-                                statusLabels[i].ForeColor = Color.FromArgb(135, 226, 98); // Green
-                                if (statusButtons[i] != null)
-                                {
-                                    statusButtons[i].Text = "Maint"; // Fits in button bounds
-                                    statusButtons[i].Enabled = true;
-                                    statusButtons[i].Font = new Font("Century Gothic", 8F, FontStyle.Bold);
-                                }
-                            }
-                            else if (vehicle.Status == "In Maintenance")
-                            {
-                                statusLabels[i].ForeColor = Color.FromArgb(255, 222, 89); // Yellow
-                                if (statusButtons[i] != null)
-                                {
-                                    statusButtons[i].Text = "Avail"; // Fits in button bounds
-                                    statusButtons[i].Enabled = true;
-                                    statusButtons[i].Font = new Font("Century Gothic", 8F, FontStyle.Bold);
-                                }
-                            }
-                            else // Rent in progress
-                            {
-                                statusLabels[i].ForeColor = Color.FromArgb(255, 49, 49); // Red
-                                if (statusButtons[i] != null)
-                                {
-                                    statusButtons[i].Text = "Rented"; // Fits in button bounds
-                                    statusButtons[i].Enabled = false; // Disable toggle during active rental
-                                    statusButtons[i].Font = new Font("Century Gothic", 7.5F, FontStyle.Bold);
-                                }
-                            }
-                        }
+                        Name = "dynamicScrollPanel",
+                        Location = new Point(0, 90),
+                        Size = new Size(panel7.Width, panel7.Height - 90),
+                        AutoScroll = true,
+                        BackColor = Color.Transparent
+                    };
+                    panel7.Controls.Add(scrollPanel);
 
-                        if (statusButtons[i] != null)
-                        {
-                            statusButtons[i].Tag = i; // Save index in tag
-                            statusButtons[i].Click -= StatusButton_Click; // Prevent duplicate handlers
-                            statusButtons[i].Click += StatusButton_Click;
-                        }
-                        
-                        // Make elements visible
-                        if (vmLabels[i] != null) vmLabels[i].Visible = true;
-                        if (pnLabels[i] != null) pnLabels[i].Visible = true;
-                        if (remarksLabels[i] != null) remarksLabels[i].Visible = true;
-                        if (statusLabels[i] != null) statusLabels[i].Visible = true;
-                        if (statusButtons[i] != null) statusButtons[i].Visible = true;
-                    }
-                    else
+                    // Hide original designer row controls
+                    Label[] vmLabels = { lblVm1, lblVm2, lblVm3, lblVm4, lblVm5, lblVm6, lblVm7 };
+                    Label[] pnLabels = { lblPn1, lblPn2, lblPn3, lblPn4, lblPn5, lblPn6, lblPn7 };
+                    Label[] remarksLabels = { lblRemarks1, lblRemarks2, lblRemarks3, lblRemarks4, lblRemarks5, lblRemarks6, lblRemarks7 };
+                    Label[] statusLabels = { lblStatus1, lblStatus2, lblStatus3, lblStatus4, lblStatus5, lblStatus6, lblStatus7 };
+                    Button[] statusButtons = { btnStm1, btnStm2, btnStm3, btnStm4, btnStm5, btnStm6, btnStm7 };
+                    
+                    // Hide original designer grid lines (label4 to label10)
+                    Label[] gridLines = { label4, label5, label6, label7, label8, label9, label10 };
+                    foreach (var line in gridLines) { if (line != null) line.Visible = false; }
+
+                    for (int i = 0; i < 7; i++)
                     {
-                        // Hide extra slots if there are fewer than 7 vehicles in the database
                         if (vmLabels[i] != null) vmLabels[i].Visible = false;
                         if (pnLabels[i] != null) pnLabels[i].Visible = false;
                         if (remarksLabels[i] != null) remarksLabels[i].Visible = false;
                         if (statusLabels[i] != null) statusLabels[i].Visible = false;
                         if (statusButtons[i] != null) statusButtons[i].Visible = false;
                     }
+                }
+
+                scrollPanel.Controls.Clear();
+                _loadedVehicles = DatabaseHelper.GetVehicles(100); // Query all vehicles (up to 100)
+
+                int rowHeight = 58;
+                for (int i = 0; i < _loadedVehicles.Count; i++)
+                {
+                    var vehicle = _loadedVehicles[i];
+                    int yPos = i * rowHeight;
+
+                    // 1. Vehicle Model Label
+                    Label lblVm = new Label
+                    {
+                        Text = $"{vehicle.Make} {vehicle.Model}",
+                        Location = new Point(16, yPos + 6),
+                        Size = new Size(164, 47),
+                        Font = new Font("Century Gothic", 12F, FontStyle.Bold),
+                        ForeColor = Color.White,
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
+
+                    // 2. Plate Number Label
+                    Label lblPn = new Label
+                    {
+                        Text = vehicle.PlateNumber,
+                        Location = new Point(199, yPos + 6),
+                        Size = new Size(140, 47),
+                        Font = new Font("Century Gothic", 12F, FontStyle.Bold),
+                        ForeColor = Color.White,
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
+
+                    // 3. Remarks Label
+                    Label lblRemarks = new Label
+                    {
+                        Text = vehicle.Remarks,
+                        Location = new Point(365, yPos + 6),
+                        Size = new Size(380, 47),
+                        Font = new Font("Century Gothic", 11.25F, FontStyle.Bold),
+                        ForeColor = Color.White,
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
+
+                    // 4. Status Label
+                    Label lblStatus = new Label
+                    {
+                        Text = vehicle.Status,
+                        Location = new Point(805, yPos + 6),
+                        Size = new Size(115, 47),
+                        Font = new Font("Century Gothic", 12F, FontStyle.Bold),
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
+
+                    // 5. Action Button
+                    Button btnStm = new Button
+                    {
+                        Location = new Point(936, yPos + 16),
+                        Size = new Size(46, 27),
+                        FlatStyle = FlatStyle.Flat,
+                        Tag = i // Save index in tag
+                    };
+
+                    // Styling based on status
+                    if (vehicle.Status == "Available")
+                    {
+                        lblStatus.ForeColor = Color.FromArgb(135, 226, 98); // Green
+                        btnStm.Text = "Maint";
+                        btnStm.BackColor = Color.Red;
+                        btnStm.ForeColor = Color.White;
+                        btnStm.Font = new Font("Century Gothic", 8F, FontStyle.Bold);
+                        btnStm.Enabled = true;
+                    }
+                    else if (vehicle.Status == "In Maintenance")
+                    {
+                        lblStatus.ForeColor = Color.FromArgb(255, 222, 89); // Yellow
+                        btnStm.Text = "Avail";
+                        btnStm.BackColor = Color.FromArgb(29, 59, 172); // Blue
+                        btnStm.ForeColor = Color.White;
+                        btnStm.Font = new Font("Century Gothic", 8F, FontStyle.Bold);
+                        btnStm.Enabled = true;
+                    }
+                    else // Rented
+                    {
+                        lblStatus.ForeColor = Color.FromArgb(255, 49, 49); // Red
+                        btnStm.Text = "Rented";
+                        btnStm.BackColor = Color.Gray;
+                        btnStm.ForeColor = Color.White;
+                        btnStm.Font = new Font("Century Gothic", 7.5F, FontStyle.Bold);
+                        btnStm.Enabled = false;
+                    }
+
+                    btnStm.Click += StatusButton_Click;
+
+                    // 6. Row Divider line
+                    Label lblDivider = new Label
+                    {
+                        Location = new Point(16, yPos + 57),
+                        Size = new Size(966, 1),
+                        BackColor = Color.FromArgb(50, 255, 255, 255)
+                    };
+
+                    scrollPanel.Controls.Add(lblVm);
+                    scrollPanel.Controls.Add(lblPn);
+                    scrollPanel.Controls.Add(lblRemarks);
+                    scrollPanel.Controls.Add(lblStatus);
+                    scrollPanel.Controls.Add(btnStm);
+                    scrollPanel.Controls.Add(lblDivider);
                 }
             }
             catch (Exception ex)
