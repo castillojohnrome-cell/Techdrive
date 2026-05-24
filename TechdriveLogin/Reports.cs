@@ -27,7 +27,7 @@ namespace TechdriveLogin
                     {
                         Name = "dynamicScrollPanel",
                         Location = new Point(0, 44),
-                        Size = new Size(panel7.Width - 25, panel7.Height - 44),
+                        Size = new Size(panel7.Width - 30, panel7.Height - 44), // Width is 966
                         AutoScroll = true,
                         BackColor = Color.Transparent
                     };
@@ -53,7 +53,7 @@ namespace TechdriveLogin
                     Label[] tbtmLabels = { lblTBTM1, lblTBTM2, lblTBTM3, lblTBTM4, lblTBTM5, lblTBTM6, lblTBTM7, lblTBTM8 };
                     Label[] netLabels = { lblNetEarnings1, lblNetEarnings2, lblNetEarnings3, lblNetEarnings4, lblNetEarnings5, lblNetEarnings6, lblNetEarnings7, lblNetEarnings8 };
                     
-                    // Hide original designer grid lines
+                    // Hide original designer grid lines (both horizontal and vertical)
                     Label[] gridLines = { label7, label8, label9, label10, label11, label12, label13, label14, label15 };
                     foreach (var line in gridLines) { if (line != null) line.Visible = false; }
 
@@ -120,49 +120,15 @@ namespace TechdriveLogin
                         TextAlign = ContentAlignment.MiddleCenter
                     };
 
-                    // 5. Net Earnings Label
+                    // 5. Net Earnings Label - shifted slightly left and narrowed to fit inside panel width (ends at 960)
                     Label lblNet = new Label
                     {
                         Text = $"₱{rep.NetEarnings:N2}",
-                        Location = new Point(872, yPos + 6),
-                        Size = new Size(120, 36),
+                        Location = new Point(860, yPos + 6),
+                        Size = new Size(100, 36),
                         Font = new Font("Century Gothic", 12F, FontStyle.Bold),
                         ForeColor = Color.White,
                         TextAlign = ContentAlignment.MiddleCenter
-                    };
-
-                    // 6. Row Divider line
-                    Label lblDivider = new Label
-                    {
-                        Location = new Point(2, yPos + 48),
-                        Size = new Size(960, 1),
-                        BackColor = Color.FromArgb(50, 255, 255, 255)
-                    };
-
-                    // 7. Vertical separators that scroll with the content
-                    Label vLine1 = new Label
-                    {
-                        Location = new Point(151, yPos),
-                        Size = new Size(2, rowHeight),
-                        BackColor = Color.White
-                    };
-                    Label vLine2 = new Label
-                    {
-                        Location = new Point(301, yPos),
-                        Size = new Size(2, rowHeight),
-                        BackColor = Color.White
-                    };
-                    Label vLine3 = new Label
-                    {
-                        Location = new Point(722, yPos),
-                        Size = new Size(2, rowHeight),
-                        BackColor = Color.White
-                    };
-                    Label vLine4 = new Label
-                    {
-                        Location = new Point(868, yPos),
-                        Size = new Size(2, rowHeight),
-                        BackColor = Color.White
                     };
 
                     scrollPanel.Controls.Add(lblVm);
@@ -170,11 +136,6 @@ namespace TechdriveLogin
                     scrollPanel.Controls.Add(lblLmd);
                     scrollPanel.Controls.Add(lblTbtm);
                     scrollPanel.Controls.Add(lblNet);
-                    scrollPanel.Controls.Add(lblDivider);
-                    scrollPanel.Controls.Add(vLine1);
-                    scrollPanel.Controls.Add(vLine2);
-                    scrollPanel.Controls.Add(vLine3);
-                    scrollPanel.Controls.Add(vLine4);
                 }
             }
             catch (Exception ex)

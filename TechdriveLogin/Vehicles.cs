@@ -29,7 +29,7 @@ namespace TechdriveLogin
                     {
                         Name = "dynamicScrollPanel",
                         Location = new Point(0, 90),
-                        Size = new Size(panel7.Width - 25, panel7.Height - 90),
+                        Size = new Size(panel7.Width - 30, panel7.Height - 90), // Width is 966
                         AutoScroll = true,
                         BackColor = Color.Transparent
                     };
@@ -55,7 +55,7 @@ namespace TechdriveLogin
                     Label[] statusLabels = { lblStatus1, lblStatus2, lblStatus3, lblStatus4, lblStatus5, lblStatus6, lblStatus7 };
                     Button[] statusButtons = { btnStm1, btnStm2, btnStm3, btnStm4, btnStm5, btnStm6, btnStm7 };
                     
-                    // Hide original designer grid lines
+                    // Hide original designer grid lines (both horizontal and vertical)
                     Label[] gridLines = { label4, label5, label6, label7, label8, label9, label10, label15, label16, label18 };
                     foreach (var line in gridLines) { if (line != null) line.Visible = false; }
 
@@ -121,10 +121,10 @@ namespace TechdriveLogin
                         TextAlign = ContentAlignment.MiddleCenter
                     };
 
-                    // 5. Action Button
+                    // 5. Action Button - shifted slightly left to fit inside the panel width (ends at 966)
                     Button btnStm = new Button
                     {
-                        Location = new Point(936, yPos + 16),
+                        Location = new Point(915, yPos + 16),
                         Size = new Size(46, 27),
                         FlatStyle = FlatStyle.Flat,
                         Tag = i
@@ -160,43 +160,11 @@ namespace TechdriveLogin
 
                     btnStm.Click += StatusButton_Click;
 
-                    // 6. Horizontal Divider line
-                    Label lblDivider = new Label
-                    {
-                        Location = new Point(16, yPos + 57),
-                        Size = new Size(950, 1),
-                        BackColor = Color.FromArgb(50, 255, 255, 255)
-                    };
-
-                    // 7. Vertical separator lines that scroll with the content
-                    Label vLine1 = new Label
-                    {
-                        Location = new Point(186, yPos),
-                        Size = new Size(2, rowHeight),
-                        BackColor = Color.White
-                    };
-                    Label vLine2 = new Label
-                    {
-                        Location = new Point(353, yPos),
-                        Size = new Size(2, rowHeight),
-                        BackColor = Color.White
-                    };
-                    Label vLine3 = new Label
-                    {
-                        Location = new Point(764, yPos),
-                        Size = new Size(2, rowHeight),
-                        BackColor = Color.White
-                    };
-
                     scrollPanel.Controls.Add(lblVm);
                     scrollPanel.Controls.Add(lblPn);
                     scrollPanel.Controls.Add(lblRemarks);
                     scrollPanel.Controls.Add(lblStatus);
                     scrollPanel.Controls.Add(btnStm);
-                    scrollPanel.Controls.Add(lblDivider);
-                    scrollPanel.Controls.Add(vLine1);
-                    scrollPanel.Controls.Add(vLine2);
-                    scrollPanel.Controls.Add(vLine3);
                 }
             }
             catch (Exception ex)
