@@ -29,11 +29,24 @@ namespace TechdriveLogin
                     {
                         Name = "dynamicScrollPanel",
                         Location = new Point(0, 90),
-                        Size = new Size(panel7.Width, panel7.Height - 90),
+                        Size = new Size(panel7.Width - 25, panel7.Height - 90),
                         AutoScroll = true,
                         BackColor = Color.Transparent
                     };
                     panel7.Controls.Add(scrollPanel);
+
+                    // Add Guna custom scrollbar
+                    var scrollbar = new Guna.UI2.WinForms.Guna2VScrollBar
+                    {
+                        Name = "customScrollbar",
+                        BindingContainer = scrollPanel,
+                        Location = new Point(panel7.Width - 15, 90),
+                        Size = new Size(10, panel7.Height - 90),
+                        FillColor = Color.FromArgb(2, 36, 78), // Matches panel7's dark blue
+                        ThumbColor = Color.FromArgb(135, 226, 98), // Matches brand green
+                        BorderRadius = 4
+                    };
+                    panel7.Controls.Add(scrollbar);
 
                     // Hide original designer row controls
                     Label[] vmLabels = { lblVm1, lblVm2, lblVm3, lblVm4, lblVm5, lblVm6, lblVm7 };
@@ -42,8 +55,8 @@ namespace TechdriveLogin
                     Label[] statusLabels = { lblStatus1, lblStatus2, lblStatus3, lblStatus4, lblStatus5, lblStatus6, lblStatus7 };
                     Button[] statusButtons = { btnStm1, btnStm2, btnStm3, btnStm4, btnStm5, btnStm6, btnStm7 };
                     
-                    // Hide original designer grid lines (label4 to label10)
-                    Label[] gridLines = { label4, label5, label6, label7, label8, label9, label10 };
+                    // Hide original designer grid lines
+                    Label[] gridLines = { label4, label5, label6, label7, label8, label9, label10, label15, label16, label18 };
                     foreach (var line in gridLines) { if (line != null) line.Visible = false; }
 
                     for (int i = 0; i < 7; i++)
@@ -57,7 +70,7 @@ namespace TechdriveLogin
                 }
 
                 scrollPanel.Controls.Clear();
-                _loadedVehicles = DatabaseHelper.GetVehicles(100); // Query all vehicles (up to 100)
+                _loadedVehicles = DatabaseHelper.GetVehicles(100);
 
                 int rowHeight = 58;
                 for (int i = 0; i < _loadedVehicles.Count; i++)
@@ -102,8 +115,8 @@ namespace TechdriveLogin
                     Label lblStatus = new Label
                     {
                         Text = vehicle.Status,
-                        Location = new Point(805, yPos + 6),
-                        Size = new Size(115, 47),
+                        Location = new Point(775, yPos + 6),
+                        Size = new Size(135, 47),
                         Font = new Font("Century Gothic", 12F, FontStyle.Bold),
                         TextAlign = ContentAlignment.MiddleCenter
                     };
@@ -114,13 +127,12 @@ namespace TechdriveLogin
                         Location = new Point(936, yPos + 16),
                         Size = new Size(46, 27),
                         FlatStyle = FlatStyle.Flat,
-                        Tag = i // Save index in tag
+                        Tag = i
                     };
 
-                    // Styling based on status
                     if (vehicle.Status == "Available")
                     {
-                        lblStatus.ForeColor = Color.FromArgb(135, 226, 98); // Green
+                        lblStatus.ForeColor = Color.FromArgb(135, 226, 98);
                         btnStm.Text = "Maint";
                         btnStm.BackColor = Color.Red;
                         btnStm.ForeColor = Color.White;
@@ -129,16 +141,16 @@ namespace TechdriveLogin
                     }
                     else if (vehicle.Status == "In Maintenance")
                     {
-                        lblStatus.ForeColor = Color.FromArgb(255, 222, 89); // Yellow
+                        lblStatus.ForeColor = Color.FromArgb(255, 222, 89);
                         btnStm.Text = "Avail";
-                        btnStm.BackColor = Color.FromArgb(29, 59, 172); // Blue
+                        btnStm.BackColor = Color.FromArgb(29, 59, 172);
                         btnStm.ForeColor = Color.White;
                         btnStm.Font = new Font("Century Gothic", 8F, FontStyle.Bold);
                         btnStm.Enabled = true;
                     }
-                    else // Rented
+                    else
                     {
-                        lblStatus.ForeColor = Color.FromArgb(255, 49, 49); // Red
+                        lblStatus.ForeColor = Color.FromArgb(255, 49, 49);
                         btnStm.Text = "Rented";
                         btnStm.BackColor = Color.Gray;
                         btnStm.ForeColor = Color.White;
@@ -148,12 +160,32 @@ namespace TechdriveLogin
 
                     btnStm.Click += StatusButton_Click;
 
-                    // 6. Row Divider line
+                    // 6. Horizontal Divider line
                     Label lblDivider = new Label
                     {
                         Location = new Point(16, yPos + 57),
-                        Size = new Size(966, 1),
+                        Size = new Size(950, 1),
                         BackColor = Color.FromArgb(50, 255, 255, 255)
+                    };
+
+                    // 7. Vertical separator lines that scroll with the content
+                    Label vLine1 = new Label
+                    {
+                        Location = new Point(186, yPos),
+                        Size = new Size(2, rowHeight),
+                        BackColor = Color.White
+                    };
+                    Label vLine2 = new Label
+                    {
+                        Location = new Point(353, yPos),
+                        Size = new Size(2, rowHeight),
+                        BackColor = Color.White
+                    };
+                    Label vLine3 = new Label
+                    {
+                        Location = new Point(764, yPos),
+                        Size = new Size(2, rowHeight),
+                        BackColor = Color.White
                     };
 
                     scrollPanel.Controls.Add(lblVm);
@@ -162,6 +194,9 @@ namespace TechdriveLogin
                     scrollPanel.Controls.Add(lblStatus);
                     scrollPanel.Controls.Add(btnStm);
                     scrollPanel.Controls.Add(lblDivider);
+                    scrollPanel.Controls.Add(vLine1);
+                    scrollPanel.Controls.Add(vLine2);
+                    scrollPanel.Controls.Add(vLine3);
                 }
             }
             catch (Exception ex)

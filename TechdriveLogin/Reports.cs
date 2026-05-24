@@ -27,11 +27,24 @@ namespace TechdriveLogin
                     {
                         Name = "dynamicScrollPanel",
                         Location = new Point(0, 44),
-                        Size = new Size(panel7.Width, panel7.Height - 44),
+                        Size = new Size(panel7.Width - 25, panel7.Height - 44),
                         AutoScroll = true,
                         BackColor = Color.Transparent
                     };
                     panel7.Controls.Add(scrollPanel);
+
+                    // Add Guna custom scrollbar
+                    var scrollbar = new Guna.UI2.WinForms.Guna2VScrollBar
+                    {
+                        Name = "customScrollbar",
+                        BindingContainer = scrollPanel,
+                        Location = new Point(panel7.Width - 15, 44),
+                        Size = new Size(10, panel7.Height - 44),
+                        FillColor = Color.FromArgb(2, 36, 78), // Matches panel7's dark blue
+                        ThumbColor = Color.FromArgb(135, 226, 98), // Matches brand green
+                        BorderRadius = 4
+                    };
+                    panel7.Controls.Add(scrollbar);
 
                     // Hide original designer row controls
                     Label[] vmLabels = { reportVMLbl1, reportVMLbl2, reportVMLbl3, reportVMLbl4, reportVMLbl5, reportVMLbl6, reportVMLbl7, reportVMLbl8 };
@@ -40,8 +53,8 @@ namespace TechdriveLogin
                     Label[] tbtmLabels = { lblTBTM1, lblTBTM2, lblTBTM3, lblTBTM4, lblTBTM5, lblTBTM6, lblTBTM7, lblTBTM8 };
                     Label[] netLabels = { lblNetEarnings1, lblNetEarnings2, lblNetEarnings3, lblNetEarnings4, lblNetEarnings5, lblNetEarnings6, lblNetEarnings7, lblNetEarnings8 };
                     
-                    // Hide original designer grid lines (label7 to label11)
-                    Label[] gridLines = { label7, label8, label9, label10, label11 };
+                    // Hide original designer grid lines
+                    Label[] gridLines = { label7, label8, label9, label10, label11, label12, label13, label14, label15 };
                     foreach (var line in gridLines) { if (line != null) line.Visible = false; }
 
                     for (int i = 0; i < 8; i++)
@@ -122,8 +135,34 @@ namespace TechdriveLogin
                     Label lblDivider = new Label
                     {
                         Location = new Point(2, yPos + 48),
-                        Size = new Size(990, 1),
+                        Size = new Size(960, 1),
                         BackColor = Color.FromArgb(50, 255, 255, 255)
+                    };
+
+                    // 7. Vertical separators that scroll with the content
+                    Label vLine1 = new Label
+                    {
+                        Location = new Point(151, yPos),
+                        Size = new Size(2, rowHeight),
+                        BackColor = Color.White
+                    };
+                    Label vLine2 = new Label
+                    {
+                        Location = new Point(301, yPos),
+                        Size = new Size(2, rowHeight),
+                        BackColor = Color.White
+                    };
+                    Label vLine3 = new Label
+                    {
+                        Location = new Point(722, yPos),
+                        Size = new Size(2, rowHeight),
+                        BackColor = Color.White
+                    };
+                    Label vLine4 = new Label
+                    {
+                        Location = new Point(868, yPos),
+                        Size = new Size(2, rowHeight),
+                        BackColor = Color.White
                     };
 
                     scrollPanel.Controls.Add(lblVm);
@@ -132,6 +171,10 @@ namespace TechdriveLogin
                     scrollPanel.Controls.Add(lblTbtm);
                     scrollPanel.Controls.Add(lblNet);
                     scrollPanel.Controls.Add(lblDivider);
+                    scrollPanel.Controls.Add(vLine1);
+                    scrollPanel.Controls.Add(vLine2);
+                    scrollPanel.Controls.Add(vLine3);
+                    scrollPanel.Controls.Add(vLine4);
                 }
             }
             catch (Exception ex)
