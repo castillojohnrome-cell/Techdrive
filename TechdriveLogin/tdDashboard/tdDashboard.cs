@@ -101,7 +101,7 @@ namespace TechdriveLogin
 
         private void btnHome_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This is the HOME button");
+            RefreshDashboardData();
         }
 
         private void btnCntctUs_Click(object sender, EventArgs e)
